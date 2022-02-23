@@ -12,9 +12,7 @@ export default function deviceRouteFactory(app: Express.Application): Router {
   const deviceRepository = new DeviceinMemoryRepositoryBackend();
   const deviceService = new DeviceService(deviceRepository);
   const createDevicePresenter = new CreateDevicePresenter();
-  const createDeviceUseCase = new CreateDeviceUseCase(
-    deviceService,
-  );
+  const createDeviceUseCase = new CreateDeviceUseCase(deviceService);
   const createDeviceController = new CreateDeviceController(
     createDeviceUseCase
   );
@@ -24,7 +22,11 @@ export default function deviceRouteFactory(app: Express.Application): Router {
     const result = await createDeviceController.handle(requestObject);
     const responseObject = await createDevicePresenter.present(result);
 
-    res.status(responseObject.statusCode).send(responseObject.body).end();
+    res
+      .status(responseObject.statusCode)
+      .header(responseObject.headers)
+      .send(responseObject.body)
+      .end();
   }
 
   router.post("/", asyncHandler(createDeviceHandler));
