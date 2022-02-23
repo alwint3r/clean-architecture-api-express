@@ -1,5 +1,5 @@
 export class DeviceEntity {
-  id: number;
+  id: string;
   name: string;
   serialNumber: string;
   createdAt: Date;
