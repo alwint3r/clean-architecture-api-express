@@ -8,6 +8,8 @@ export class CreateDeviceUseCase
 {
   constructor(private readonly deviceService: IDeviceService) {}
   async create(data: CreateDeviceDto) {
+    this.validate(data);
+
     const existing = await this.deviceService.findExisting(data.id);
     if (existing) {
       throw new Error("Device already exists");
@@ -15,5 +17,11 @@ export class CreateDeviceUseCase
 
     const device = DeviceEntity.fromPartial(data);
     return this.deviceService.create(device);
+  }
+
+  private validate(data: CreateDeviceDto) {
+    if (!data.id) {
+      throw new Error("Device id is required");
+    }
   }
 }
